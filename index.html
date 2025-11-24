@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>300Cain</title>
     <style>
-        * { margin:0; padding:0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
             color: #300;
             font-family: 'Courier New', monospace;
             overflow: hidden;
             cursor: none;
+            user-select: none;
         }
         #glitch {
             position: absolute;
@@ -52,7 +53,7 @@
             bottom: -200px;
             left: 0;
             width: 100%;
-            height: 300px; /* TAMAMLANDI: Eksik değerdi */
+            height: 300px;
             background: radial-gradient(ellipse at center, #800 0%, #300 50%, #000 100%);
             animation: drip 10s linear infinite;
             opacity: 0.6;
@@ -93,6 +94,7 @@
             50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
+        @keyframes fade { to { opacity: 0; } }
     </style>
 </head>
 <body>
@@ -102,15 +104,19 @@
     <div class="whisper">seni izliyorum... kaçış yok...</div>
     <div id="scare">CAIN GELİYOR!</div>
 
-    <audio id="creep" loop>
-        <source src="https://freesound.org/data/previews/276/276992_5123858-lq.mp3" type="audio/mpeg">
+    <!-- Embed ses (base64, CORS-free, basit tone generator yerine) -->
+    <audio id="creep" loop preload="auto">
+        <!-- Basit generated tone; gerçek ses için external kullan ama autoplay için user gesture ekle -->
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHo7x4AAA==" type="audio/wav">
     </audio>
 
     <script>
-        // Ses başlat
+        // Kullanıcı etkileşimi bekle (autoplay policy için)
+        let interacted = false;
+        document.addEventListener('click', () => { interacted = true; audio.play(); }, {once: true});
+
         const audio = document.getElementById('creep');
         audio.volume = 0.3;
-        audio.play().catch(e => console.log('Ses engellendi'));
 
         // Ekran titremesi
         setInterval(() => {
@@ -120,25 +126,28 @@
             }
         }, 200);
 
-        // Jump scare (15 sn sonra)
+        // Jump scare (5 sn sonra, etkileşimli)
         setTimeout(() => {
-            const scare = document.getElementById('scare');
-            scare.style.display = 'block';
-            audio.volume = 1;
-            setTimeout(() => {
-                scare.style.display = 'none';
-                audio.volume = 0.3;
-            }, 1000);
-        }, 15000);
+            if (interacted) {
+                const scare = document.getElementById('scare');
+                scare.style.display = 'block';
+                audio.volume = 1;
+                setTimeout(() => {
+                    scare.style.display = 'none';
+                    audio.volume = 0.3;
+                }, 1000);
+            }
+        }, 5000);
 
-        // Webcam izni iste (korku efekti için)
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                console.log('Kamera erişimi: Cain seni görüyor...');
-                // Stream'i gizli tut, sadece izin al
-                stream.getTracks().forEach(track => track.stop());
-            })
-            .catch(() => { /* İzin reddedilirse sessiz kal */ });
+        // Webcam (güvenli, sadece izin al)
+        if (navigator.mediaDevices) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    console.log('Kamera: Cain seni görüyor...');
+                    stream.getTracks().forEach(track => track.stop());
+                })
+                .catch(() => {});
+        }
 
         // Fare takibi
         document.addEventListener('mousemove', (e) => {
@@ -151,11 +160,6 @@
             document.body.appendChild(dot);
             setTimeout(() => dot.remove(), 1000);
         });
-
-        // Fade animasyonu ekle
-        const style = document.createElement('style');
-        style.textContent = '@keyframes fade { to { opacity: 0; } }';
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
