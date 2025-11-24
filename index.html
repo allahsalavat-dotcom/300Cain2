@@ -5,161 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>300Cain</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #000;
-            color: #300;
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-            cursor: none;
-            user-select: none;
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:#000; overflow:hidden; cursor:none; user-select:none; }
+        #glitch { 
+            position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); 
+            font-size:140px; font-weight:900; letter-spacing:22px; color:#fff; 
+            text-transform:uppercase; animation:g 1.3s infinite linear;
         }
-        #glitch {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 120px;
-            font-weight: 900;
-            letter-spacing: 15px;
-            text-transform: uppercase;
-            animation: glitch1 1.5s infinite linear alternate-reverse;
-            z-index: 10;
+        @keyframes g {
+            0%,100%{ text-shadow:8px 0 #f00,-8px 0 #0ff; clip-path:polygon(0 0,100% 0,100% 40%,0 40%) }
+            25%{ clip-path:polygon(0 30%,100% 30%,100% 70%,0 70%) }
+            50%{ text-shadow:-8px 0 #f00,8px 0 #0ff; clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%) }
+            75%{ clip-path:polygon(0 10%,100% 10%,100% 50%,0 50%) }
         }
-        @keyframes glitch1 {
-            0% { text-shadow: 5px 0 #f00, -5px 0 #0ff; clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); }
-            20% { clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
-            40% { clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
-            60% { text-shadow: -5px 0 #f00, 5px 0 #0ff; }
-            80% { clip-path: polygon(0 0, 100% 0, 100% 20%, 0 20%); }
-            100% { text-shadow: 5px 0 #fff, -5px 0 #fff; }
+        .static { 
+            position:fixed; inset:0; pointer-events:none; opacity:0.6;
+            background:linear-gradient(90deg,transparent 49%,rgba(255,0,0,.04) 50%,transparent 51%),
+                       linear-gradient(transparent 49%,rgba(0,255,255,.04) 50%,transparent 51%);
+            background-size:5px 5px; animation:n 0.09s steps(10) infinite;
         }
-        .static {
-            position: fixed;
-            inset: 0;
-            background: 
-                linear-gradient(90deg, transparent 49%, rgba(255,0,0,0.03) 50%, transparent 51%),
-                linear-gradient(transparent 49%, rgba(0,255,255,0.03) 50%, transparent 51%);
-            background-size: 4px 4px;
-            pointer-events: none;
-            animation: noise 0.1s steps(10) infinite;
-            z-index: 1;
+        @keyframes n { from{transform:translate(0,0)} to{transform:translate(100%,100%)} }
+        .blood { 
+            position:fixed; bottom:-250px; left:0; width:100%; height:500px; opacity:0.7;
+            background:radial-gradient(circle at center,#900 0%,#300 40%,#000 100%);
+            animation:d 14s linear infinite;
         }
-        @keyframes noise { 
-            from { transform: translate(0,0); } 
-            to { transform: translate(100%,100%); } 
+        @keyframes d { 0%{transform:translateY(0)} 100%{transform:translateY(700px)} }
+        .whisper { 
+            position:fixed; bottom:30px; left:50%; transform:translateX(-50%);
+            color:#700; font-size:19px; animation:w 6s infinite;
         }
-        .blood {
-            position: fixed;
-            bottom: -200px;
-            left: 0;
-            width: 100%;
-            height: 300px;
-            background: radial-gradient(ellipse at center, #800 0%, #300 50%, #000 100%);
-            animation: drip 10s linear infinite;
-            opacity: 0.6;
-            z-index: 2;
+        @keyframes w { 0%,100%{opacity:0} 50%{opacity:1} }
+        #scare { 
+            position:fixed; inset:0; background:#000; display:flex; align-items:center; justify-content:center;
+            font-size:260px; color:#f00; text-shadow:0 0 80px #f00; z-index:999; display:none;
+            animation:j 0.8s;
         }
-        @keyframes drip {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(500px); }
-        }
-        .whisper {
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            color: #511;
-            animation: fadeInOut 4s infinite;
-            z-index: 5;
-        }
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-        #scare {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 200px;
-            color: #f00;
-            font-weight: bold;
-            text-shadow: 0 0 50px #f00;
-            z-index: 100;
-            display: none;
-            animation: jump 0.5s;
-        }
-        @keyframes jump {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
-        }
-        @keyframes fade { to { opacity: 0; } }
+        @keyframes j { 0%{transform:scale(0);opacity:0} 50%{transform:scale(2)} 100%{transform:scale(1);opacity:0} }
     </style>
 </head>
 <body>
     <div class="static"></div>
     <div id="glitch">300CAIN</div>
     <div class="blood"></div>
-    <div class="whisper">seni izliyorum... kaçış yok...</div>
-    <div id="scare">CAIN GELİYOR!</div>
+    <div class="whisper">cain seni dinliyor...</div>
+    <div id="scare">CAIN BURADA!</div>
 
-    <!-- Embed ses (base64, CORS-free, basit tone generator yerine) -->
-    <audio id="creep" loop preload="auto">
-        <!-- Basit generated tone; gerçek ses için external kullan ama autoplay için user gesture ekle -->
-        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHo7x4AAA==" type="audio/wav">
+    <!-- SENİN ŞARKIN -->
+    <audio id="song" loop>
+        <source src="cain-sarkisi.mp3" type="audio/mpeg">
+        Tarayıcın ses desteklemiyor.
     </audio>
 
     <script>
-        // Kullanıcı etkileşimi bekle (autoplay policy için)
-        let interacted = false;
-        document.addEventListener('click', () => { interacted = true; audio.play(); }, {once: true});
+        const song = document.getElementById('song');
+        song.volume = 0;
+        let vol = 0;
+        let started = false;
 
-        const audio = document.getElementById('creep');
-        audio.volume = 0.3;
+        // İlk tıklamada şarkı başlasın + ses yavaş yavaş artsın
+        document.addEventListener('click', () => {
+            if (started) return;
+            started = true;
+            song.play();
+            const fadeIn = setInterval(() => {
+                vol += 0.01;
+                song.volume = Math.min(vol, 0.8);   // maksimum %80 ses
+                if (vol >= 0.8) clearInterval(fadeIn);
+            }, 250);
+        }, {once: true});
 
-        // Ekran titremesi
+        // 10 saniye sonra jump scare + ses birden patlasın
+        setTimeout(() => {
+            if (!started) return;
+            document.getElementById('scare').style.display = 'flex';
+            song.volume = 1;
+            setTimeout(() => {
+                document.getElementById('scare').style.display = 'none';
+                song.volume = 0.8;
+            }, 1000);
+        }, 10000);
+
+        // Rastgele titreme
         setInterval(() => {
-            if (Math.random() > 0.9) {
-                document.body.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+            if (Math.random() > 0.93) {
+                document.body.style.transform = `translate(${Math.random()*16-8}px,${Math.random()*16-8}px)`;
                 setTimeout(() => document.body.style.transform = '', 100);
             }
-        }, 200);
-
-        // Jump scare (5 sn sonra, etkileşimli)
-        setTimeout(() => {
-            if (interacted) {
-                const scare = document.getElementById('scare');
-                scare.style.display = 'block';
-                audio.volume = 1;
-                setTimeout(() => {
-                    scare.style.display = 'none';
-                    audio.volume = 0.3;
-                }, 1000);
-            }
-        }, 5000);
-
-        // Webcam (güvenli, sadece izin al)
-        if (navigator.mediaDevices) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    console.log('Kamera: Cain seni görüyor...');
-                    stream.getTracks().forEach(track => track.stop());
-                })
-                .catch(() => {});
-        }
-
-        // Fare takibi
-        document.addEventListener('mousemove', (e) => {
-            const dot = document.createElement('div');
-            dot.style.cssText = `
-                position: fixed; left: ${e.pageX}px; top: ${e.pageY}px;
-                width: 10px; height: 10px; background: #f00; border-radius: 50%;
-                pointer-events: none; z-index: 20; animation: fade 1s forwards;
-            `;
-            document.body.appendChild(dot);
-            setTimeout(() => dot.remove(), 1000);
-        });
+        }, 300);
     </script>
 </body>
 </html>
