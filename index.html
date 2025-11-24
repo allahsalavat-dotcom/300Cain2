@@ -5,138 +5,157 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>300Cain</title>
     <style>
+        * { margin:0; padding:0; box-sizing: border-box; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            color: #300; /* koyu kırmızı */
+            background: #000;
+            color: #300;
             font-family: 'Courier New', monospace;
             overflow: hidden;
-            cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='), auto;
+            cursor: none;
         }
-        .glitch {
+        #glitch {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 100px;
-            font-weight: bold;
-            letter-spacing: 10px;
+            font-size: 120px;
+            font-weight: 900;
+            letter-spacing: 15px;
             text-transform: uppercase;
-            animation: glitch 2s infinite;
-            text-shadow: 0.05em 0 0 rgba(255,0,0,.75),
-                         -0.025em -0.05em 0 rgba(0,255,0,.75),
-                         0.025em 0.05em 0 rgba(0,0,255,.75);
+            animation: glitch1 1.5s infinite linear alternate-reverse;
+            z-index: 10;
         }
-        @keyframes glitch {
-            0%, 100% { 
-                text-shadow: 0.05em 0 0 #f00, -0.05em 0 0 #0f0, 0 0.05em #00f;
-                clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
-            }
-            10% { clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%); }
-            20% { clip-path: polygon(0 0, 100% 0, 100% 20%, 0 20%); }
-            30% { text-shadow: 0.05em 0.05em 0 #f00, -0.05em -0.05em 0 #0f0; }
-            40% { clip-path: polygon(0 80%, 100% 80%, 100% 100%, 0 100%); }
-            50% { clip-path: polygon(0 50%, 100% 50%, 100% 55%, 0 55%); }
-            60% { text-shadow: -0.025em 0.05em 0 #f00, 0.025em -0.05em 0 #0f0; }
-            80% { clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); }
+        @keyframes glitch1 {
+            0% { text-shadow: 5px 0 #f00, -5px 0 #0ff; clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%); }
+            20% { clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
+            40% { clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
+            60% { text-shadow: -5px 0 #f00, 5px 0 #0ff; }
+            80% { clip-path: polygon(0 0, 100% 0, 100% 20%, 0 20%); }
+            100% { text-shadow: 5px 0 #fff, -5px 0 #fff; }
         }
         .static {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, #111, #111 2px, transparent 2px, transparent 4px);
-            opacity: 0.1;
+            inset: 0;
+            background: 
+                linear-gradient(90deg, transparent 49%, rgba(255,0,0,0.03) 50%, transparent 51%),
+                linear-gradient(transparent 49%, rgba(0,255,255,0.03) 50%, transparent 51%);
+            background-size: 4px 4px;
             pointer-events: none;
-            animation: static 0.1s steps(3) infinite;
+            animation: noise 0.1s steps(10) infinite;
+            z-index: 1;
         }
-        @keyframes static { 0%,100% { opacity: 0.1; } 50% { opacity: 0.2; } }
-
+        @keyframes noise { 
+            from { transform: translate(0,0); } 
+            to { transform: translate(100%,100%); } 
+        }
         .blood {
             position: fixed;
-            bottom: -100px;
+            bottom: -200px;
             left: 0;
             width: 100%;
-            height: 300px;
-            background: radial-gradient(circle at center, #300 10%, #000 70%);
-            animation: drip 8s linear infinite;
-            opacity: 0.7;
+            height: 300px; /* TAMAMLANDI: Eksik değerdi */
+            background: radial-gradient(ellipse at center, #800 0%, #300 50%, #000 100%);
+            animation: drip 10s linear infinite;
+            opacity: 0.6;
+            z-index: 2;
         }
         @keyframes drip {
-            0% { transform: translateY(-50px); }
-            100% { transform: translateY(200px); }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(500px); }
         }
-
         .whisper {
             position: fixed;
-            bottom: 20px;
+            bottom: 10px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 14px;
+            font-size: 16px;
             color: #511;
-            animation: fade 5s infinite;
+            animation: fadeInOut 4s infinite;
+            z-index: 5;
         }
-        @keyframes fade { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        #scare {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            color: #f00;
+            font-weight: bold;
+            text-shadow: 0 0 50px #f00;
+            z-index: 100;
+            display: none;
+            animation: jump 0.5s;
+        }
+        @keyframes jump {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+        }
     </style>
 </head>
 <body>
+    <div class="static"></div>
+    <div id="glitch">300CAIN</div>
+    <div class="blood"></div>
+    <div class="whisper">seni izliyorum... kaçış yok...</div>
+    <div id="scare">CAIN GELİYOR!</div>
 
-<div class="static"></div>
+    <audio id="creep" loop>
+        <source src="https://freesound.org/data/previews/276/276992_5123858-lq.mp3" type="audio/mpeg">
+    </audio>
 
-<div class="glitch">300CAIN</div>
+    <script>
+        // Ses başlat
+        const audio = document.getElementById('creep');
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log('Ses engellendi'));
 
-<div class="blood"></div>
+        // Ekran titremesi
+        setInterval(() => {
+            if (Math.random() > 0.9) {
+                document.body.style.transform = `translate(${Math.random()*10-5}px, ${Math.random()*10-5}px)`;
+                setTimeout(() => document.body.style.transform = '', 100);
+            }
+        }, 200);
 
-<div class="whisper">seni görüyorum... kaçamazsın...</div>
-
-<audio autoplay loop>
-    <source src="https://freesound.org/data/previews/276/276992_5123858-lq.mp3" type="audio/mpeg">
-    <!-- Düşük frekanslı rahatsız edici ses (telif-free) -->
-</audio>
-
-<script>
-    // Rastgele ekran titremesi
-    setInterval(() => {
-        if (Math.random() > 0.95) {
-            document.body.style.transform = 'translate(5px, 5px)';
+        // Jump scare (15 sn sonra)
+        setTimeout(() => {
+            const scare = document.getElementById('scare');
+            scare.style.display = 'block';
+            audio.volume = 1;
             setTimeout(() => {
-                document.body.style.transform = 'translate(0,0)';
-            }, 50);
-        }
-    }, 300);
+                scare.style.display = 'none';
+                audio.volume = 0.3;
+            }, 1000);
+        }, 15000);
 
-    // 10 saniyede bir "Cain seni bulacak" yazısı yanıp sönsün
-    setTimeout(() => {
-        const scare = document.createElement('div');
-        scare.innerHTML = 'CAIN SENİ BULACAK';
-        scare.style.position = 'fixed';
-        scare.style.top = '50%';
-        scare.style.left = '50%';
-        scare.style.transform = 'translate(-50%, -50%)';
-        scare.style.fontSize = '150px';
-        scare.style.color = '#900';
-        scare.style.zIndex = '9999';
-        scare.style.fontWeight = 'bold';
-        scare.style.textShadow = '0 0 30px #f00';
-        scare.style.animation = 'fade 1s';
-        document.body.appendChild(scare);
-        setTimeout(() => scare.remove(), 1000);
-    }, 10000);
+        // Webcam izni iste (korku efekti için)
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                console.log('Kamera erişimi: Cain seni görüyor...');
+                // Stream'i gizli tut, sadece izin al
+                stream.getTracks().forEach(track => track.stop());
+            })
+            .catch(() => { /* İzin reddedilirse sessiz kal */ });
 
-    // Fareyi takip eden hafif kırmızı gölge
-    document.addEventListener('mousemove', (e) => {
-        const shadow = document.createElement('div');
-        shadow.style.position = 'absolute';
-        shadow.style.width = '20px';
-        shadow.style.height = '20px';
-        shadow.style.background = 'radial-gradient(circle, #300 10%, transparent 70%)';
-        shadow.style.left = e.pageX + 'px';
-        shadow.style.top = e.pageY + 'px';
-        shadow.style.pointerEvents = 'none';
-        shadow.style.zIndex = '999';
-        document.body.appendChild(shadow);
-        setTimeout(() => shadow.remove(), 1000);
-    });
-</script>
+        // Fare takibi
+        document.addEventListener('mousemove', (e) => {
+            const dot = document.createElement('div');
+            dot.style.cssText = `
+                position: fixed; left: ${e.pageX}px; top: ${e.pageY}px;
+                width: 10px; height: 10px; background: #f00; border-radius: 50%;
+                pointer-events: none; z-index: 20; animation: fade 1s forwards;
+            `;
+            document.body.appendChild(dot);
+            setTimeout(() => dot.remove(), 1000);
+        });
 
+        // Fade animasyonu ekle
+        const style = document.createElement('style');
+        style.textContent = '@keyframes fade { to { opacity: 0; } }';
+        document.head.appendChild(style);
+    </script>
 </body>
 </html>
